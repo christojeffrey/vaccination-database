@@ -6,7 +6,7 @@ const { chunk } = require("underscore");
 const { URL } = require("url");
 const {buildInsertSQL} = require("./sqlBuilder");
 
-const KOTAKABCOUNTS = 100;
+const KOTAKABCOUNTS = 514;
 const FASKESTYPE = [`RUMAH SAKIT`, `PUSKESMAS`, `KLINIK`];
 const KEPEMILIKAN_RS = [`SWASTA`, `NEGERI`];
 const KELAS_RS = [`I`, `II`, `III`];
