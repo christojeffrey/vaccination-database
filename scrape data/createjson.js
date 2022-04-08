@@ -36,7 +36,7 @@ const createPenduduk = async () => {
     const randomPhoneNumber = faker.phone.phoneNumber();
     const randomGender = faker.random.arrayElement(["L", "P"]);
     //random date
-    const randomDate = faker.date.between("1950-01-01", "2000-12-31");
+    const randomDate = faker.date.between("1950-01-01", "2000-12-31").toISOString().split("T")[0];
     const randomKategori = faker.random.arrayElement(pilihanKategori);
     const randomPekerjaan = faker.random.arrayElement(pekerjaan).PEKERJAAN;
     let iToStr;
@@ -96,6 +96,33 @@ createPenyakitPenduduk = async () => {
   console.log(dataPenyakitPenduduk);
   await buildInsertSQL(dataPenyakitPenduduk, "PenyakitPenduduk");
 };
+
+/* CREATE PENYAKIT VAKSIN*/
+
+// CREATE TABLE `PenyakitVaksin` (
+//   `IDPenyakit` INT NOT NULL,
+//   `IDVaksin` INT NOT NULL,
+//   PRIMARY KEY (`IDPenyakit`, `IDVaksin`),
+//   FOREIGN KEY (`IDPenyakit`) REFERENCES `Penyakit` (`IDPenyakit`),
+//   FOREIGN KEY (`IDVaksin`) REFERENCES `Vaksin` (`IDVaksin`)
+// );
+createPenyakitVaksin = async () => {
+  dataPenyakitVaksin = [];
+  for (i = 1; i <= 150; i++) {
+    // id penyakit random dari 1 hingga 100
+    const randomPenyakit = faker.random.number({ min: 1, max: 100 });
+    // id vaksin random dari 1 hingga 10
+    const randomVaksin = faker.random.number({ min: 1, max: 10 });
+    penyakitVaksin = {
+      IDPenyakit: randomPenyakit,
+      IDVaksin: randomVaksin,
+    };
+    dataPenyakitVaksin = [...dataPenyakitVaksin, penyakitVaksin];
+  }
+  console.log(dataPenyakitVaksin);
+  await buildInsertSQL(dataPenyakitVaksin, "PenyakitVaksin");
+};
+
 /* CREATE PENYAKIT */
 
 // CREATE TABLE `Penyakit` (
@@ -143,7 +170,8 @@ createVaksin = async () => {
 // );
 createNoTelpPenduduk = async () => {
   dataNoTelpPenduduk = [];
-  for (i = 1; i <= 100; i++) {
+  // mungkin udah pernah dibikin, jadi bruteforce aja, bikin 300, setidaknya 100 dapet lah
+  for (i = 1; i <= 300; i++) {
     // nik random antara 1 sampe 100
     const randomNIK = faker.random.number({ min: 1, max: 100 });
     if (randomNIK < 10) {
@@ -175,15 +203,18 @@ createNoTelpPenduduk = async () => {
 //   FOREIGN KEY (`NIK`) REFERENCES `Penduduk` (`NIK`),
 //   FOREIGN KEY (`IDBatch`) REFERENCES `Batch` (`IDBatch`)
 // );
+// urusan biar masuk akal:
+// vaksin tahap 2 pasti setelah tahap pertama. tahap ketiga pasti setelah tahap kedua. aman
+// tapi masih bisa jadi gk masuk akal, yaitu vaksinnya menggunakan vaksin yang ternyata belum delivered. nti aja lah sembuhinnya
 createPenyuntikanVaksin = async () => {
   dataPenyuntikanVaksin = [];
   // NIK tidak boleh muncul 2x;
   const NIKs = [];
   // 34 sudah vaksin sekali, 33 sudah 2x, 33 sudah 3x. jadi totalnya 34 + 33*2 + 33*3 =199
   for (i = 1; i <= 100; i++) {
-    // nik random antara 1 sampe 100
     isBerhasil = false;
     while (!isBerhasil) {
+      // nik random antara 1 sampe 100
       const randomNIK = faker.random.number({ min: 1, max: 100 });
       if (randomNIK < 10) {
         NIKstr = "00" + randomNIK;
@@ -194,57 +225,135 @@ createPenyuntikanVaksin = async () => {
       }
       NIKstr = "1234512345123" + NIKstr;
       if (NIKs.includes(NIKstr)) {
+        continue;
       } else {
         isBerhasil = true;
         NIKs.push(NIKstr);
-        if (i <= 34) {
-          const randomTanggal = faker.date.past();
-          const randomIDBatch = faker.random.number({ min: 1, max: 100 });
-          penyuntikanVaksin = {
-            NIK: NIKstr,
-            Tahap: 1,
-            Tanggal: randomTanggal,
-            IDBatch: randomIDBatch,
-          };
-          dataPenyuntikanVaksin = [...dataPenyuntikanVaksin, penyuntikanVaksin];
-        } else if (i <= 67) {
-          // lakukan 2x
-          for (j = 1; j <= 2; j++) {
-            const randomTanggal = faker.date.past();
-            const randomIDBatch = faker.random.number({ min: 1, max: 100 });
-            penyuntikanVaksin = {
-              NIK: NIKstr,
-              Tahap: j,
-              Tanggal: randomTanggal,
-              IDBatch: randomIDBatch,
-            };
-            dataPenyuntikanVaksin = [...dataPenyuntikanVaksin, penyuntikanVaksin];
-          }
-        } else if (i <= 100) {
-          // lakukan 3x
-          for (j = 1; j <= 3; j++) {
-            const randomTanggal = faker.date.past();
-            const randomIDBatch = faker.random.number({ min: 1, max: 100 });
-            penyuntikanVaksin = {
-              NIK: NIKstr,
-              Tahap: j,
-              Tanggal: randomTanggal,
-              IDBatch: randomIDBatch,
-            };
-            dataPenyuntikanVaksin = [...dataPenyuntikanVaksin, penyuntikanVaksin];
-          }
-        }
+      }
+      let tanggalVaksin = faker.date.past().toISOString().split("T")[0];
+      penyuntikanVaksin = {
+        NIK: NIKstr,
+        Tahap: 1,
+        Tanggal: tanggalVaksin,
+        IDBatch: faker.random.number({ min: 1, max: 100 }),
+      };
+      dataPenyuntikanVaksin = [...dataPenyuntikanVaksin, penyuntikanVaksin];
+      if (i >= 34) {
+        tanggalVaksin = faker.date.between(tanggalVaksin).toISOString().split("T")[0];
+        penyuntikanVaksin = {
+          NIK: NIKstr,
+          Tahap: 2,
+          Tanggal: tanggalVaksin,
+          IDBatch: faker.random.number({ min: 1, max: 100 }),
+        };
+        dataPenyuntikanVaksin = [...dataPenyuntikanVaksin, penyuntikanVaksin];
+      }
+      if (i >= 67) {
+        tanggalVaksin = faker.date.between(tanggalVaksin).toISOString().split("T")[0];
+        penyuntikanVaksin = {
+          NIK: NIKstr,
+          Tahap: 3,
+          Tanggal: tanggalVaksin,
+          IDBatch: faker.random.number({ min: 1, max: 100 }),
+        };
+        dataPenyuntikanVaksin = [...dataPenyuntikanVaksin, penyuntikanVaksin];
       }
     }
   }
+
   console.log(dataPenyuntikanVaksin);
   await buildInsertSQL(dataPenyuntikanVaksin, "PenyuntikanVaksin");
 };
+
+/* CREATE BATCH */
+// CREATE TABLE `Batch` (
+//   `IDBatch` INT NOT NULL AUTO_INCREMENT,
+//   `ExpireDate` DATE,
+//   `IDVaksin` INT,
+//   `JumlahTersedia` INT,
+//   `JumlahTerpakai` INT,
+//   `IDFasilitas` INT,
+//   PRIMARY KEY (`IDBatch`),
+//   FOREIGN KEY (`IDFasilitas`) REFERENCES `FasilitasKesehatan` (`IDFasilitas`),
+//   FOREIGN KEY (`IDVaksin`) REFERENCES `Vaksin` (`IDVaksin`)
+// );
+createBatch = async () => {
+  dataBatch = [];
+  for (i = 1; i <= 100; i++) {
+    const randomTanggal = faker.date.future().toISOString().split("T")[0];
+    const randomIDVaksin = (i % 10) + 1; // 1-10, dibikin gini biar gampang ngehubungin sama logPengiriman
+    const max = 200;
+    const randomJumlahTersedia = faker.random.number({ min: 1, max: 100 });
+    const randomJumlahTerpakai = 200 - randomJumlahTersedia;
+    const randomIDFasilitas = faker.random.number({ min: 1, max: 100 });
+    batch = {
+      IDBatch: i,
+      ExpireDate: randomTanggal,
+      IDVaksin: randomIDVaksin,
+      JumlahTersedia: randomJumlahTersedia,
+      JumlahTerpakai: randomJumlahTerpakai,
+      IDFasilitas: randomIDFasilitas,
+    };
+    dataBatch = [...dataBatch, batch];
+  }
+  console.log(dataBatch);
+  await buildInsertSQL(dataBatch, "Batch");
+};
+/* CREATE LOG PENGIRIMAN */
+// CREATE TABLE `LogPengiriman` (
+//   `IDBatch` INT NOT NULL AUTO_INCREMENT,
+//   `Status` VARCHAR(32) NOT NULL,
+//   `TimeStamp` DATE,
+//   PRIMARY KEY (`IDBatch`),
+//   FOREIGN KEY (`IDBatch`) REFERENCES `Batch` (`IDBatch`)
+// );
+createLogPengiriman = async () => {
+  // 34 masih SHIPPED, 33 OUT FOR DELIVERY, 33 DELIVERED
+  dataLogPengiriman = [];
+  for (i = 1; i <= 100; i++) {
+    let randomStatus = "SHIPPED";
+    let randomTimeStamp = faker.date.past().toISOString().split("T")[0];
+    logPengiriman = {
+      IDBatch: i,
+      Status: randomStatus,
+      TimeStamp: randomTimeStamp,
+    };
+    dataLogPengiriman = [...dataLogPengiriman, logPengiriman];
+
+    if (i >= 34) {
+      randomStatus = "OUT FOR DELIVERY";
+      randomTimeStamp = faker.date.between(randomTimeStamp).toISOString().split("T")[0];
+      logPengiriman = {
+        IDBatch: i,
+        Status: randomStatus,
+        TimeStamp: randomTimeStamp,
+      };
+      dataLogPengiriman = [...dataLogPengiriman, logPengiriman];
+    }
+
+    if (i >= 67) {
+      randomStatus = "DELIVERED";
+      randomTimeStamp = faker.date.between(randomTimeStamp).toISOString().split("T")[0];
+      logPengiriman = {
+        IDBatch: i,
+        Status: randomStatus,
+        TimeStamp: randomTimeStamp,
+      };
+      dataLogPengiriman = [...dataLogPengiriman, logPengiriman];
+    }
+  }
+
+  console.log(dataLogPengiriman);
+  await buildInsertSQL(dataLogPengiriman, "LogPengiriman");
+};
 // PANGGIL FUNGSI
 // createProvinsi();
-createPenduduk();
-createPenyakitPenduduk();
-createPenyakit();
-createNoTelpPenduduk();
-createVaksin();
-createPenyuntikanVaksin();
+// createPenduduk();
+// createPenyakitPenduduk();
+// createPenyakit();
+// createNoTelpPenduduk();
+// createVaksin();
+// createPenyuntikanVaksin();
+// createBatch();
+// createLogPengiriman();
+createPenyakitVaksin();

@@ -124,7 +124,7 @@ CREATE TABLE `LogPengiriman` (
   `IDBatch` INT NOT NULL AUTO_INCREMENT,
   `Status` VARCHAR(32) NOT NULL,
   `TimeStamp` DATE,
-  PRIMARY KEY (`IDBatch`),
+  PRIMARY KEY (`IDBatch`, `Status`),
   FOREIGN KEY (`IDBatch`) REFERENCES `Batch` (`IDBatch`)
 );
 
