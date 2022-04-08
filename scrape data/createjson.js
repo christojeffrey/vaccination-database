@@ -244,7 +244,7 @@ createPenyuntikanVaksin = async () => {
 // createProvinsi();
 createPenduduk();
 createPenyakitPenduduk();
-// createPenyakit();
-// createNoTelpPenduduk();
+createPenyakit();
+createNoTelpPenduduk();
 createVaksin();
 createPenyuntikanVaksin();

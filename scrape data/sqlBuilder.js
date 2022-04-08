@@ -1,4 +1,4 @@
-const converter = require("json-sql")({ separatedValues: false });
+const converter = require("json-sql")({ separatedValues: false, dialect: "mysql" });
 const fs = require("fs");
 async function buildInsertSQL(data, relation) {
   let output = "";
@@ -15,4 +15,4 @@ async function buildInsertSQL(data, relation) {
   });
 }
 
-module.exports = {buildInsertSQL}
+module.exports = { buildInsertSQL };
