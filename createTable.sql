@@ -107,6 +107,10 @@ CREATE TABLE `NoTelpFasilitasKesehatan` (
   FOREIGN KEY (`IDFasilitas`) REFERENCES `FasilitasKesehatan` (`IDFasilitas`)
 );
 
+
+
+
+
 -- random value kita sendiri 🤓👍
 CREATE TABLE `Batch` (
   `IDBatch` INT NOT NULL AUTO_INCREMENT,
@@ -114,9 +118,7 @@ CREATE TABLE `Batch` (
   `IDVaksin` INT,
   `JumlahTersedia` INT,
   `JumlahTerpakai` INT,
-  `IDFasilitas` INT,
   PRIMARY KEY (`IDBatch`),
-  FOREIGN KEY (`IDFasilitas`) REFERENCES `FasilitasKesehatan` (`IDFasilitas`),
   FOREIGN KEY (`IDVaksin`) REFERENCES `Vaksin` (`IDVaksin`)
 );
 
@@ -125,6 +127,14 @@ CREATE TABLE `LogPengiriman` (
   `Status` VARCHAR(32) NOT NULL,
   `TimeStamp` DATE,
   PRIMARY KEY (`IDBatch`, `Status`),
+  FOREIGN KEY (`IDBatch`) REFERENCES `Batch` (`IDBatch`)
+);
+
+CREATE TABLE `FaskesBatch` (
+  `IDBatch` INT,
+  `IDFasilitas` INT,
+  PRIMARY KEY (`IDBatch`),
+  FOREIGN KEY (`IDFasilitas`) REFERENCES `FasilitasKesehatan` (`IDFasilitas`),
   FOREIGN KEY (`IDBatch`) REFERENCES `Batch` (`IDBatch`)
 );
 

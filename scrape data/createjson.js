@@ -285,20 +285,44 @@ createBatch = async () => {
     const max = 200;
     const randomJumlahTersedia = faker.random.number({ min: 1, max: 100 });
     const randomJumlahTerpakai = 200 - randomJumlahTersedia;
-    const randomIDFasilitas = faker.random.number({ min: 1, max: 100 });
+    // const randomIDFasilitas = faker.random.number({ min: 1, max: 100 });
     batch = {
       IDBatch: i,
       ExpireDate: randomTanggal,
       IDVaksin: randomIDVaksin,
       JumlahTersedia: randomJumlahTersedia,
       JumlahTerpakai: randomJumlahTerpakai,
-      IDFasilitas: randomIDFasilitas,
+      // IDFasilitas: randomIDFasilitas,
     };
     dataBatch = [...dataBatch, batch];
   }
   console.log(dataBatch);
   await buildInsertSQL(dataBatch, "Batch");
 };
+
+/* CREATE FASKESBATCH */
+// CREATE TABLE `FaskesBatch` (
+//   `IDBatch` INT,
+//   `IDFasilitas` INT,
+//   PRIMARY KEY (`IDBatch`),
+//   FOREIGN KEY (`IDFasilitas`) REFERENCES `FasilitasKesehatan` (`IDFasilitas`),
+//   FOREIGN KEY (`IDBatch`) REFERENCES `Batch` (`IDBatch`)
+// );
+const createFaskesBatch = async () => {
+  dataFaskesBatch = [];
+  for (i = 1; i <= 100; i++) {
+    const randomIDFasilitas = faker.random.number({ min: 1, max: 100 });
+    const randomIDBatch = i;
+    faskesBatch = {
+      IDBatch: randomIDBatch,
+      IDFasilitas: randomIDFasilitas,
+    };
+    dataFaskesBatch = [...dataFaskesBatch, faskesBatch];
+  }
+  console.log(dataFaskesBatch);
+  await buildInsertSQL(dataFaskesBatch, "FaskesBatch");
+};
+
 /* CREATE LOG PENGIRIMAN */
 // CREATE TABLE `LogPengiriman` (
 //   `IDBatch` INT NOT NULL AUTO_INCREMENT,
@@ -356,4 +380,5 @@ createLogPengiriman = async () => {
 // createPenyuntikanVaksin();
 // createBatch();
 // createLogPengiriman();
-createPenyakitVaksin();
+// createPenyakitVaksin();
+createFaskesBatch();
