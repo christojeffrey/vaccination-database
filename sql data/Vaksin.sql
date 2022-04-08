@@ -1,0 +1,10 @@
+insert into "Vaksin" ("IDVaksin", "Nama", "Produsen") values (1, 'BioNTech', 'Madagascar');
+insert into "Vaksin" ("IDVaksin", "Nama", "Produsen") values (2, 'CoronaVac', 'Anguilla');
+insert into "Vaksin" ("IDVaksin", "Nama", "Produsen") values (3, 'Moderna', 'Saint Martin');
+insert into "Vaksin" ("IDVaksin", "Nama", "Produsen") values (4, 'Novavax', 'Democratic People's Republic of Korea');
+insert into "Vaksin" ("IDVaksin", "Nama", "Produsen") values (5, 'Oxford', 'Burkina Faso');
+insert into "Vaksin" ("IDVaksin", "Nama", "Produsen") values (6, 'Sinopharm', 'Iraq');
+insert into "Vaksin" ("IDVaksin", "Nama", "Produsen") values (7, 'Sputnik V', 'Indonesia');
+insert into "Vaksin" ("IDVaksin", "Nama", "Produsen") values (8, 'CanSino', 'Congo');
+insert into "Vaksin" ("IDVaksin", "Nama", "Produsen") values (9, 'Janssen', 'Comoros');
+insert into "Vaksin" ("IDVaksin", "Nama", "Produsen") values (10, 'RBD - Dimer', 'Falkland Islands (Malvinas)');

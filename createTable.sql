@@ -11,6 +11,14 @@ CREATE TABLE `Penduduk` (
   PRIMARY KEY (`NIK`)
 );
 
+CREATE TABLE `NoTelpPenduduk` (
+  `NIK` VARCHAR(16),
+  `NoTelp` VARCHAR(16),
+  PRIMARY KEY (`NIK`, `NoTelp`),
+  FOREIGN KEY (`NIK`) REFERENCES `Penduduk`(`NIK`)
+);
+
+
 -- bisa manual 🤓👍
 CREATE TABLE `Provinsi` (
   `IDProvinsi` INT NOT NULL AUTO_INCREMENT,
@@ -57,11 +65,13 @@ CREATE TABLE `Penyakit` (
 CREATE TABLE `Batch` (
   `IDBatch` INT NOT NULL AUTO_INCREMENT,
   `ExpireDate` DATE,
+  `IDVaksin` INT,
   `JumlahTersedia` INT,
   `JumlahTerpakai` INT,
   `IDFasilitas` INT,
   PRIMARY KEY (`IDBatch`),
-  FOREIGN KEY (`IDFasilitas`) REFERENCES `FasilitasKesehatan` (`IDFasilitas`)
+  FOREIGN KEY (`IDFasilitas`) REFERENCES `FasilitasKesehatan` (`IDFasilitas`),
+  FOREIGN KEY (`IDVaksin`) REFERENCES `Vaksin` (`IDVaksin`)
 );
 
 -- 357806tanggal lahir0001
